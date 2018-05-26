@@ -20,11 +20,14 @@ section {
   text-align: center; }
   section canvas {
     margin: auto; }
+    section canvas#cube-canvas {
+      z-index: -1; }
 
 #cube-overlay {
   pointer-events: none;
   position: absolute;
-  z-index: 99; }
+  z-index: 1;
+  overflow: hidden; }
   #cube-overlay .point {
     position: absolute;
     font-size: 1.5em; }
