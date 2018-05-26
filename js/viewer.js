@@ -62,7 +62,8 @@ $("#nama_ok").on("click", function(){
   }
 });
 
-var lineMat = new THREE.LineBasicMaterial({ color: 0xcc0a0a, linewidth: 2 });
+var distMat = new THREE.LineBasicMaterial({ color: 0xcc0a0a, linewidth: 2 });
+var targetMat = new THREE.LineBasicMaterial({ color: 0x000acc, linewidth: 2 });
 var lineDist;
 var lineTarget;
 var lineGeo;
@@ -73,6 +74,7 @@ var pointA, pointB, orig, target, jarak, pA, pB;
 
 $("#jarak_ok").on("click", function(){
   scene.remove(lineDist);
+  scene.remove(lineTarget);
   pointA = $("#pointA").val().trim().toUpperCase();
   pointB = $("#pointB").val().trim().toUpperCase();
 
@@ -97,10 +99,11 @@ $("#jarak_ok").on("click", function(){
     var v = new THREE.Vector3().subVectors(orig, pointC);
     var t = v.dot(d);
     target = pointC.clone().add(d.multiplyScalar(t));
-  }
-  else{
-    alert("Operation not yet supported!");
-    return;
+    lineGeo = new THREE.Geometry();
+    lineGeo.vertices.push(pointC);
+    lineGeo.vertices.push(pointD);
+    lineTarget = new THREE.Line(lineGeo, targetMat);
+    scene.add(lineTarget);
   }
   jarak = orig.distanceTo(target) * skalaRusuk;
   $("#jarak").text(jarak);
@@ -108,7 +111,7 @@ $("#jarak_ok").on("click", function(){
   lineGeo = new THREE.Geometry();
   lineGeo.vertices.push(orig);
   lineGeo.vertices.push(target);
-  lineDist = new THREE.Line(lineGeo, lineMat);
+  lineDist = new THREE.Line(lineGeo, distMat);
   scene.add(lineDist);
   // else{
   //   alert("Operasi belum di-support!");
