@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>3 DIMENSI</title>
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="style/master.css"></style>
+    <link rel="stylesheet" href="style/jqmath-0.4.3.css"></style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h2>3DMath</h2>
+      </header>
+      <section id="cube">
+        <div id="cube-overlay"></div>
+        <br>Kubus<br>
+        <label for="rusuk">Rusuk: </label><input id="rusuk" type="text"></input> satuan <button id="rusuk_ok">OK</button><br>
+        <label for="nama">Masukkan nama kubus: </label> <input id="nama" type="text"></input><button for="nama" id="nama_ok">OK</button><br>
+        Jarak dari: <input id="pointA" type="text"></input> ke <input id="pointB"></input><button id="jarak_ok">Hitung!</button><br>
+        Jarak: <span id="jarak"></span><br>
+
+      </section>
+    </div>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/jqmath-etc-0.4.6.min.js"></script>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/viewer.js"></script>
+  </body>
+</html>
