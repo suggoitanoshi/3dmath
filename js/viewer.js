@@ -196,8 +196,7 @@ $("#jarak_ok").on("click", function(){
     }
   }
   jarakRaw = orig.distanceTo(target);
-  jarak = jarakRaw*skalaRusuk;
-  $("#jarak").text(jarak + " " + satuan);
+  updateDistance();
 
   lineGeo = new THREE.Geometry();
   lineGeo.vertices.push(orig);
@@ -208,11 +207,51 @@ $("#jarak_ok").on("click", function(){
 
 $("#rusuk_ok").on("click", function(){
   var rusukBaru = $("#rusuk").val();
-  skalaRusuk = rusukBaru / rusuk;
   satuan = $("#satuan").val();
-  if(jarak != null)  $("#jarak").text(jarakRaw*skalaRusuk + " " + satuan);
+  $("#volume").text("$" + (Math.pow(rusukBaru, 3)) + " " + satuan + "^3" + "$");
+  $("#lp").text("$" + (6* Math.pow(rusukBaru, 2)) + " " + satuan + "^2" + "$");
+  M.parseMath($("#volume").get(0));
+  M.parseMath($("#lp").get(0));
+  skalaRusuk = rusukBaru / rusuk;
+  if(jarak != null)  updateDistance();
   rusukBaru = null;
 });
+
+var jarak, rusukReal;
+function updateDistance(){
+  jarak = null;
+  rusukReal = rusuk*skalaRusuk;
+  var truncated = truncateDecimals(jarakRaw, 4);
+  if(jarakRaw == (rusuk*Math.sqrt(2))){
+    jarak = rusukReal + "√2";
+  }
+  else if(jarakRaw == (rusuk*Math.sqrt(3))){
+    jarak = rusukReal + ("√3");
+  }
+  else if(truncated == truncateDecimals(rusuk/2 * Math.sqrt(2), 4)){
+    jarak = "{1/2}"+rusukReal+"√2";
+  }
+  else if(truncated == truncateDecimals((rusuk/3) * Math.sqrt(3), 4)){
+    jarak = "{1/3}"+ rusukReal + ("√3")
+  }
+  else if(truncated == truncateDecimals(2*rusuk/3 * Math.sqrt(3), 4)){
+    jarak = "{2/3}"+ rusukReal + ("√3")
+  }
+  else if(truncated == truncateDecimals(rusuk/2 * Math.sqrt(6), 4)){
+    jarak = "{1/2}"+ rusukReal + ("√6");
+  }
+  else{
+    jarak = truncateDecimals(jarakRaw * skalaRusuk, 3);
+  }
+  // else if(jarakRaw == (rusuk))
+  jarak = "$" + jarak + "$";
+  $("#jarak").text(jarak + " " + satuan);
+  M.parseMath($("#jarak")[0]);
+}
+
+function truncateDecimals(num, dec){
+  return Math.trunc(num * Math.pow(10, dec)) / Math.pow(10,dec);
+}
 
 camera.position.z = 5;
 
