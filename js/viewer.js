@@ -35,12 +35,12 @@ var cubeName = null;
 var midPointName = new Array();
 
 var cubeMidPoints = [
-  new THREE.Vector3(0, 0, -rusuk/2),
-  new THREE.Vector3(0, 0, rusuk/2),
-  new THREE.Vector3(-rusuk/2, 0, 0),
+  new THREE.Vector3(0, -rusuk/2, 0),
   new THREE.Vector3(0, rusuk/2, 0),
+  new THREE.Vector3(-rusuk/2, 0, 0),
+  new THREE.Vector3(0, 0, -rusuk/2),
   new THREE.Vector3(rusuk/2, 0, 0),
-  new THREE.Vector3(0, -rusuk/2, 0)
+  new THREE.Vector3(0, 0, rusuk/2)
 ];
 
 var cubePoints = [
@@ -84,6 +84,9 @@ $("#nama_ok").on("click", function(){
   var tempmp;
   for(var j = 0; j < 6; j++){
     tempmp = String.fromCharCode(cubeName.charCodeAt(7) + j + 1);
+    if((cubeName.charCodeAt(7) + j + 1) > 90){
+      tempmp = String.fromCharCode(65+j);
+    }
     $(".point."+(8+j)).text(tempmp);
     midPointName[j] = tempmp;
   }
