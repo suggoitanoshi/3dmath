@@ -64,48 +64,92 @@ $("#nama_ok").on("click", function(){
 
 var distMat = new THREE.LineBasicMaterial({ color: 0xcc0a0a, linewidth: 2 });
 var targetMat = new THREE.LineBasicMaterial({ color: 0x000acc, linewidth: 2 });
+var shapeMat = new THREE.MeshBasicMaterial( { color: 0x000acc, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
 var lineDist;
 var lineTarget;
 var lineGeo;
+var shapeGeo;
+var shapeTarget;
 
-var pointA, pointB, orig, target, jarak, pA, pB;
+var pointA, pointB, orig, target, jarak, jarakRaw, pA, pB;
 // pA = name of origin point
 // pB = name of target point
 
 $("#jarak_ok").on("click", function(){
   scene.remove(lineDist);
   scene.remove(lineTarget);
+  scene.remove(shapeTarget);
   pointA = $("#pointA").val().trim().toUpperCase();
   pointB = $("#pointB").val().trim().toUpperCase();
+  if(pointA.length == 1){
+    if(pointB.length == 1){
+      // titik ke titik
+      pA = cubeName.indexOf(pointA);
+      pB = cubeName.indexOf(pointB);
+      orig = cubePoints[pA];
+      target = cubePoints[pB];
+    }
+    else if(pointB.length == 2){
+      // titik ke garis
+      pA = cubeName.indexOf(pointA);
+      orig = cubePoints[pA];
+      // introduce two new points, C and D
+      pointB = pointB.split("");
+      var pC = cubeName.indexOf(pointB[0]);
+      var pD = cubeName.indexOf(pointB[1]);
+      var pointC = cubePoints[pC];
+      var pointD = cubePoints[pD];
+      var d = new THREE.Vector3().subVectors(pointC, pointD).divideScalar(pointD.distanceTo(pointC));
+      var v = new THREE.Vector3().subVectors(orig, pointC);
+      var t = v.dot(d);
+      target = pointC.clone().add(d.multiplyScalar(t));
+      lineGeo = new THREE.Geometry();
+      lineGeo.vertices.push(pointC);
+      lineGeo.vertices.push(pointD);
+      lineTarget = new THREE.Line(lineGeo, targetMat);
+      scene.add(lineTarget);
+    }
+    else if(pointB.length == 3 || pointB.length == 4){
+      // titik ke bidang (?)
+      // TODO: much research
+      pA = cubeName.indexOf(pointA);
+      orig = cubePoints[pA];
+      pointB = pointB.split("");
+      shapeGeo = new THREE.Geometry();
+      var plane = new Array(), planePoint = new Array();
+      for(var i = 0; i < pointB.length; i++){
+        plane[i] = cubeName.indexOf(pointB[i]);
+        planePoint[i] = cubePoints[plane[i]];
+        shapeGeo.vertices.push(planePoint[i]);
+      }
+      shapeGeo.vertices.push(planePoint[0]);
+      shapeGeo.faces.push(new THREE.Face3(0,1,2));
+      if(pointB.length == 4){
+        shapeGeo.faces.push(new THREE.Face3(0,3,2));
+      }
+      shapeTarget = new THREE.Mesh(shapeGeo, shapeMat);
+      // ambil 2 garis
+      var line1 = new THREE.Vector3().subVectors(planePoint[0], planePoint[1]);
+      var line2 = new THREE.Vector3().subVectors(planePoint[1], planePoint[2]);
+      // cari garis normal menggunakan 'cross product'
+      var norm = line1.cross(line2);
+      var len = norm.clone().length()
+      norm.divideScalar(len);
+      // jarak titik awal ke salah satu titik di bidang
+      var pointOnPlane = planePoint[0].clone().add(planePoint[1]).add(planePoint[2]).divideScalar(3)
+      var dist = new THREE.Vector3().subVectors(pointOnPlane, orig);
+      // dot product dist dan norm = "jarak titik ke bidang"
+      jarak = dist.dot(norm);
+      // titik hasil proyeksi
+      target = orig.clone().add(norm.clone().multiplyScalar(jarak));
+      scene.add(shapeTarget);
+    }
+    else{
 
-  if(pointA.length == 1 && pointB.length == 1){
-    // titik ke titik
-    pA = cubeName.indexOf(pointA);
-    pB = cubeName.indexOf(pointB);
-    orig = cubePoints[pA];
-    target = cubePoints[pB];
+    }
   }
-  if(pointA.length == 1 && pointB.length == 2){
-    // titik ke garis
-    pA = cubeName.indexOf(pointA);
-    orig = cubePoints[pA];
-    // introduce two new points, C and D
-    pointB = pointB.split("");
-    var pC = cubeName.indexOf(pointB[0]);
-    var pD = cubeName.indexOf(pointB[1]);
-    var pointC = cubePoints[pC];
-    var pointD = cubePoints[pD];
-    var d = new THREE.Vector3().subVectors(pointC, pointD).divideScalar(pointD.distanceTo(pointC));
-    var v = new THREE.Vector3().subVectors(orig, pointC);
-    var t = v.dot(d);
-    target = pointC.clone().add(d.multiplyScalar(t));
-    lineGeo = new THREE.Geometry();
-    lineGeo.vertices.push(pointC);
-    lineGeo.vertices.push(pointD);
-    lineTarget = new THREE.Line(lineGeo, targetMat);
-    scene.add(lineTarget);
-  }
-  jarak = orig.distanceTo(target) * skalaRusuk;
+  jarakRaw = orig.distanceTo(target);
+  jarak = jarakRaw*skalaRusuk;
   $("#jarak").text(jarak);
 
   lineGeo = new THREE.Geometry();
@@ -113,14 +157,13 @@ $("#jarak_ok").on("click", function(){
   lineGeo.vertices.push(target);
   lineDist = new THREE.Line(lineGeo, distMat);
   scene.add(lineDist);
-  // else{
-  //   alert("Operasi belum di-support!");
-  //   return;
-  // }
 });
 
 $("#rusuk_ok").on("click", function(){
-  skalaRusuk = $("#rusuk").val() / rusuk;
+  var rusukBaru = $("#rusuk").val();
+  skalaRusuk = rusukBaru / rusuk;
+  $("#jarak").text(jarakRaw*skalaRusuk);
+  rusukBaru = null;
 });
 
 camera.position.z = 5;
