@@ -145,7 +145,8 @@ $("#jarak_ok").on("click", function(){
       scene.add(shapeTarget);
     }
     else{
-
+      alert("Operasi tidak diketahui!");
+      return;
     }
   }
   jarakRaw = orig.distanceTo(target);
@@ -162,7 +163,7 @@ $("#jarak_ok").on("click", function(){
 $("#rusuk_ok").on("click", function(){
   var rusukBaru = $("#rusuk").val();
   skalaRusuk = rusukBaru / rusuk;
-  $("#jarak").text(jarakRaw*skalaRusuk);
+  if(jarak != null)  $("#jarak").text(jarakRaw*skalaRusuk);
   rusukBaru = null;
 });
 
