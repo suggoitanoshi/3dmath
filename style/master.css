@@ -22,6 +22,14 @@ section {
     margin: auto; }
     section canvas#cube-canvas {
       z-index: -1; }
+  section.display {
+    flex-grow: 3; }
+  section.rumus {
+    flex-grow: 1; }
+  section.flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center; }
 
 #cube-overlay {
   pointer-events: none;
@@ -31,5 +39,37 @@ section {
   #cube-overlay .point {
     position: absolute;
     font-size: 1.5em; }
+
+@media screen and (max-width: 720px) {
+  section.rumus {
+    flex-grow: 1; }
+  section.display {
+    flex-grow: 1; } }
+input[type] {
+  background: #f583cb;
+  border-radius: 0;
+  border: 0;
+  color: white;
+  padding: 0.5em;
+  margin: 0.1em; }
+
+input[type="button"] {
+  transition: background 0.2s ease; }
+  input[type="button"]:hover {
+    background: #70094a; }
+  input[type="button"]:active {
+    background: #41052b; }
+
+input[type="text"] {
+  background: white;
+  color: black;
+  border: 0.1em solid #f583cb;
+  transition: box-shadow 0.2s ease;
+  width: 1.5em; }
+  input[type="text"]:focus {
+    box-shadow: 0 0 2px 2px #f583cb; }
+
+input#nama {
+  width: 8em; }
 
 /*# sourceMappingURL=master.css.map */

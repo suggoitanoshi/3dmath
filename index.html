@@ -14,14 +14,33 @@
       <header>
         <h2>3DMath</h2>
       </header>
-      <section id="cube">
-        <div id="cube-overlay"></div>
-        <br>Kubus<br>
-        <label for="rusuk">Rusuk: </label><input id="rusuk" type="text"></input> satuan <button id="rusuk_ok">OK</button><br>
-        <label for="nama">Masukkan nama kubus: </label> <input id="nama" type="text"></input><button for="nama" id="nama_ok">OK</button><br>
-        Jarak dari: <input id="pointA" type="text"></input> ke <input id="pointB"></input><button id="jarak_ok">Hitung!</button><br>
-        Jarak: <span id="jarak"></span><br>
-
+      <section class="flex">
+        <section class="display">
+          <div id="cube-overlay"></div>
+        </section>
+        <section class="rumus">
+          <!-- tambah rumus di sini -->
+          <br>Kubus<br>
+          <div>
+            <label for="rusuk">Rusuk: </label>
+            <input id="rusuk" type="text"></input>
+            <input id="satuan" type="text" value="satuan"></input>
+            <input type=button id="rusuk_ok" value="OK"></input>
+          </div>
+          <div>
+            <label for="nama">Masukkan nama kubus: </label>
+            <input id="nama" type="text"></input>
+            <input type="button" for="nama" id="nama_ok" value="OK"></input>
+          </div>
+          <div>
+            Jarak dari:
+            <input id="pointA" type="text"></input>
+            ke
+            <input id="pointB" type="text"></input>
+            <input type="button" id="jarak_ok" value="Hitung!"></input>
+          </div>
+          Jarak: <span id="jarak"></span>
+        </section>
       </section>
     </div>
     <script src="js/jquery-3.2.1.js"></script>

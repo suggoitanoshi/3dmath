@@ -18,7 +18,7 @@ renderer.setSize(width, height);
 renderer.domElement.id = "cube-canvas";
 
 // Insert generated canvas to "The World"
-$("#cube").prepend(renderer.domElement);
+$(".display").prepend(renderer.domElement);
 var controls = new THREE.OrbitControls(camera, $("#cube-canvas")[0]);
 
 // Create basic cube

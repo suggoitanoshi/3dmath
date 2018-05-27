@@ -1,3 +1,5 @@
+$theme: #f583cb;
+
 h1, h2, h3, h4, h5, h6, h7{
   margin: 0;
   font-weight: normal;
@@ -12,7 +14,7 @@ body{
 
 .container > header{
   width: 100%;
-  background-color: #f583cb;
+  background-color: $theme;
   text-align: center;
   color: white;
   padding: 2em 0 2em 0;
@@ -27,6 +29,17 @@ section{
     }
   }
   text-align: center;
+  &.display{
+    flex-grow: 3;
+  }
+  &.rumus{
+    flex-grow: 1;
+  }
+  &.flex{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
 }
 
 #cube-overlay{
@@ -37,5 +50,53 @@ section{
   .point{
     position: absolute;
     font-size: 1.5em;
+  }
+}
+
+@media screen and (max-width: 720px){
+  section{
+    &.rumus{
+      flex-grow: 1;
+    }
+    &.display{
+      flex-grow: 1;
+    }
+  }
+}
+
+// normalize inputs
+input[type]{
+  background: $theme;
+  border-radius: 0;
+  border: 0;
+  color: white;
+  padding: 0.5em;
+  margin: 0.1em;
+}
+
+input[type="button"]{
+  transition: background 0.2s ease;
+  &:hover{
+    background: darken($theme, 50%);
+  }
+  &:active{
+    background: darken($theme, 60%);
+  }
+}
+
+input[type="text"]{
+  background: white;
+  color: black;
+  border: 0.1em solid $theme;
+  transition: box-shadow 0.2s ease;
+  width: 1.5em;
+  &:focus{
+    box-shadow: 0 0 2px 2px $theme;
+  }
+}
+
+input{
+  &#nama{
+    width: 8em;
   }
 }
