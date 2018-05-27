@@ -33,7 +33,7 @@ section{
     flex-grow: 3;
   }
   &.rumus{
-    flex-grow: 1;
+    flex-grow: 2;
   }
   &.flex{
     display: flex;
@@ -50,6 +50,9 @@ section{
   .point{
     position: absolute;
     font-size: 1.5em;
+  }
+  .point.transparent{
+    opacity: 0.5;
   }
 }
 
@@ -89,7 +92,7 @@ input[type="text"]{
   color: black;
   border: 0.1em solid $theme;
   transition: box-shadow 0.2s ease;
-  width: 1.5em;
+  width: 2.5em;
   &:focus{
     box-shadow: 0 0 2px 2px $theme;
   }

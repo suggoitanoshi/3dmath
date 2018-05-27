@@ -23,6 +23,7 @@ var controls = new THREE.OrbitControls(camera, $("#cube-canvas")[0]);
 
 // Create basic cube
 var rusuk = 2;
+var satuan = "satuan";
 var skalaRusuk = 1;
 var geometry = new THREE.BoxGeometry(rusuk, rusuk, rusuk);
 var edgeGeometry = new THREE.EdgesGeometry(geometry);
@@ -31,7 +32,16 @@ var cube = new THREE.LineSegments(edgeGeometry, material);
 scene.add(cube);
 
 var cubeName = null;
-var cubeNames = new Array();
+var midPointName = new Array();
+
+var cubeMidPoints = [
+  new THREE.Vector3(0, 0, -rusuk/2),
+  new THREE.Vector3(0, 0, rusuk/2),
+  new THREE.Vector3(-rusuk/2, 0, 0),
+  new THREE.Vector3(0, rusuk/2, 0),
+  new THREE.Vector3(rusuk/2, 0, 0),
+  new THREE.Vector3(0, -rusuk/2, 0)
+];
 
 var cubePoints = [
   new THREE.Vector3(-rusuk/2, -rusuk/2, rusuk/2),
@@ -44,8 +54,19 @@ var cubePoints = [
   new THREE.Vector3(-rusuk/2, rusuk/2, -rusuk/2)
 ];
 
+var mpGeo = new THREE.Geometry();
+for(var i = 0; i < cubeMidPoints.length; i++){
+  mpGeo.vertices.push(cubeMidPoints[i]);
+}
+var mpMaterial = new THREE.PointsMaterial({ color: 0x00ff00, size: 0.1 });
+var midPoints = new THREE.Points( mpGeo, mpMaterial );
+scene.add(midPoints);
+
 for(var i = 0; i < 8; i++){
   $("#cube-overlay").append($("<span></span>").addClass("point "+i));
+}
+for(var j = 0; j < 6; j++){
+  $("#cube-overlay").append($("<span></span").addClass("transparent point " + (j+8)));
 }
 var canvasOffset = $("#cube-canvas").offset();
 
@@ -59,6 +80,12 @@ $("#nama_ok").on("click", function(){
 
   for (var i = 0; i < nama.length; i++){
     $(".point."+i).text(nama[i]);
+  }
+  var tempmp;
+  for(var j = 0; j < 6; j++){
+    tempmp = String.fromCharCode(cubeName.charCodeAt(7) + j + 1);
+    $(".point."+(8+j)).text(tempmp);
+    midPointName[j] = tempmp;
   }
 });
 
@@ -83,11 +110,30 @@ $("#jarak_ok").on("click", function(){
   pointB = $("#pointB").val().trim().toUpperCase();
   if(pointA.length == 1){
     if(pointB.length == 1){
-      // titik ke titik
-      pA = cubeName.indexOf(pointA);
-      pB = cubeName.indexOf(pointB);
-      orig = cubePoints[pA];
-      target = cubePoints[pB];
+      if(cubeName.indexOf(pointA) == -1){
+        pA = midPointName.indexOf(pointA);
+        if(cubeName.indexOf(pointB) == -1){
+          pB = midPointName.indexOf(pointB);
+          target = cubePoints[pB];
+        }
+        else{
+          pB = cubeName.indexOf(pointB);
+          target = cubePoints[pB];
+        }
+        orig = cubeMidPoints[pA];
+      }
+      else if(cubeName.indexOf(pointB) == -1){
+        pA = cubeName.indexOf(pointA);
+        pB = midPointName.indexOf(pointB);
+        orig = cubePoints[pA];
+        target = cubeMidPoints[pB];
+      }
+      else{
+        pA = cubeName.indexOf(pointA);
+        pB = cubeName.indexOf(pointB);
+        orig = cubePoints[pA];
+        target = cubePoints[pB];
+      }
     }
     else if(pointB.length == 2){
       // titik ke garis
@@ -151,7 +197,7 @@ $("#jarak_ok").on("click", function(){
   }
   jarakRaw = orig.distanceTo(target);
   jarak = jarakRaw*skalaRusuk;
-  $("#jarak").text(jarak);
+  $("#jarak").text(jarak + " " + satuan);
 
   lineGeo = new THREE.Geometry();
   lineGeo.vertices.push(orig);
@@ -163,7 +209,8 @@ $("#jarak_ok").on("click", function(){
 $("#rusuk_ok").on("click", function(){
   var rusukBaru = $("#rusuk").val();
   skalaRusuk = rusukBaru / rusuk;
-  if(jarak != null)  $("#jarak").text(jarakRaw*skalaRusuk);
+  satuan = $("#satuan").val();
+  if(jarak != null)  $("#jarak").text(jarakRaw*skalaRusuk + " " + satuan);
   rusukBaru = null;
 });
 
@@ -173,6 +220,7 @@ var sdiagDisplay = false;
 
 var halfWidth = width/2;
 var halfHeight = height / 2;
+var tempScreen;
 function animate(){
   requestAnimationFrame(animate);
 
@@ -180,16 +228,37 @@ function animate(){
 
   if(cubeName !== null){
     for(var i = 0; i < 8; i++){
-      var tempScreen = cubePoints[i].clone();
+      tempScreen = cubePoints[i].clone();
       // tempScreen.setFromMatrixPosition(cube.matrixWorld);
       tempScreen.project(camera);
       tempScreen.x = (tempScreen.x * halfWidth) + halfWidth;
       tempScreen.y = -(tempScreen.y * halfHeight) + halfHeight;
       $(".point."+i).css({left: tempScreen.x + "px", top: tempScreen.y + "px"});
     }
+    for(var j = 0; j < 6; j++){
+      tempScreen = cubeMidPoints[j].clone();
+      tempScreen.project(camera);
+      tempScreen.x = (tempScreen.x * halfWidth) + halfWidth;
+      tempScreen.y = -(tempScreen.y * halfHeight) + halfHeight;
+      $(".point."+(j+8)).css({left: tempScreen.x + "px", top: tempScreen.y + "px" });
+    }
   }
 }
 animate();
+
+$(window).resize(function(){
+  if(window.innerWidth / window.innerHeight > 1){
+    width = window.innerWidth / 3;
+    height = window.innerWidth / 3;
+  }
+  else{
+    width = window.innerWidth;
+    height = window.innerWidth;
+  }
+  renderer.setSize(width, height);
+  halfWidth = width/2;
+  halfHeight = height/2;
+});
 
 var pos = $("#cube-canvas").offset();
 
